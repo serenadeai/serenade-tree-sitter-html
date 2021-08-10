@@ -329,3 +329,23 @@ TR, TD, and TH elements without end tags
       (element (start_tag (tag_name)) (text))
       (element (start_tag (tag_name)) (text)))
     (end_tag (tag_name))))
+
+===================================
+XML constructs
+===================================
+<?xml version="1.0"?>
+<Foo.Bar>value</Foo.Bar>
+<![CDATA[
+  <foo>value</foo>
+]]>
+---
+
+(fragment
+  (element
+    (declaration_tag
+      (tag_name)
+      (attribute (attribute_name) (quoted_attribute_value (attribute_value)))))
+  (text)
+  (element (start_tag (tag_name)) (text) (end_tag (tag_name)))
+  (text)
+  (cdata))

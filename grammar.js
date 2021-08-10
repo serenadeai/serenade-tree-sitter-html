@@ -28,10 +28,17 @@ module.exports = grammar({
       '>'
     ),
 
+    cdata: $ => seq(
+      '<![CDATA[',
+      /[^]]+/,
+      ']]>'
+    ),
+
     _doctype: $ => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
 
     _node: $ => choice(
       $.doctype,
+      $.cdata,
       $.text,
       $.element,
       $.script_element,
@@ -45,7 +52,8 @@ module.exports = grammar({
         repeat($._node),
         choice($.end_tag, $._implicit_end_tag)
       ),
-      $.self_closing_tag
+      $.self_closing_tag,
+      $.declaration_tag
     ),
 
     script_element: $ => seq(
@@ -86,6 +94,13 @@ module.exports = grammar({
       alias($._start_tag_name, $.tag_name),
       repeat($.attribute),
       '/>'
+    ),
+
+    declaration_tag: $ => seq(
+      '<?',
+      alias($._start_tag_name, $.tag_name),
+      repeat($.attribute),
+      '?>'
     ),
 
     end_tag: $ => seq(
