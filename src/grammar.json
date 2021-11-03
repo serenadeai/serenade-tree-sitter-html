@@ -5,7 +5,7 @@
       "type": "REPEAT",
       "content": {
         "type": "SYMBOL",
-        "name": "_node"
+        "name": "node"
       }
     },
     "doctype": {
@@ -16,17 +16,17 @@
           "value": "<!"
         },
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_doctype"
-          },
-          "named": false,
-          "value": "doctype"
+          "type": "SYMBOL",
+          "name": "doctype_"
         },
         {
-          "type": "PATTERN",
-          "value": "[^>]+"
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[^>]+"
+          },
+          "named": true,
+          "value": "doctype_pattern"
         },
         {
           "type": "STRING",
@@ -42,8 +42,13 @@
           "value": "<![CDATA["
         },
         {
-          "type": "PATTERN",
-          "value": "[^]]+"
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[^]]+"
+          },
+          "named": true,
+          "value": "cdata_pattern"
         },
         {
           "type": "STRING",
@@ -51,36 +56,49 @@
         }
       ]
     },
-    "_doctype": {
+    "doctype_": {
       "type": "PATTERN",
       "value": "[Dd][Oo][Cc][Tt][Yy][Pp][Ee]"
     },
-    "_node": {
+    "node": {
       "type": "CHOICE",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "doctype"
+          "type": "FIELD",
+          "name": "text_markup_element",
+          "content": {
+            "type": "SYMBOL",
+            "name": "text_"
+          }
         },
         {
-          "type": "SYMBOL",
-          "name": "cdata"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "text_"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "markup_element"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "erroneous_end_tag"
+          "type": "FIELD",
+          "name": "markup_element",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "doctype"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "cdata"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "standard_markup_element"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "erroneous_end_tag"
+              }
+            ]
+          }
         }
       ]
     },
-    "markup_element": {
+    "standard_markup_element": {
       "type": "CHOICE",
       "members": [
         {
@@ -117,7 +135,7 @@
                     "type": "REPEAT",
                     "content": {
                       "type": "SYMBOL",
-                      "name": "_node"
+                      "name": "node"
                     }
                   }
                 },
@@ -483,12 +501,13 @@
             "value": "</"
           },
           {
-            "type": "FIELD",
-            "name": "identifier",
+            "type": "ALIAS",
             "content": {
               "type": "SYMBOL",
               "name": "erroneous_end_tag_name"
-            }
+            },
+            "named": true,
+            "value": "identifier"
           },
           {
             "type": "STRING",
@@ -568,7 +587,7 @@
                     "value": "[^']+"
                   },
                   "named": true,
-                  "value": "attribute_value"
+                  "value": "single_quote"
                 },
                 {
                   "type": "BLANK"
@@ -598,7 +617,7 @@
                     "value": "[^\"]+"
                   },
                   "named": true,
-                  "value": "attribute_value"
+                  "value": "double_quote"
                 },
                 {
                   "type": "BLANK"

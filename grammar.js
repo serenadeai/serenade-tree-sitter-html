@@ -19,32 +19,34 @@ module.exports = grammar({
   ],
 
   rules: {
-    fragment: $ => repeat($._node),
+    fragment: $ => repeat($.node),
 
     doctype: $ => seq(
       '<!',
-      alias($._doctype, 'doctype'),
-      /[^>]+/,
+      $.doctype_,
+      alias(/[^>]+/, $.doctype_pattern),
       '>'
     ),
 
     cdata: $ => seq(
       '<![CDATA[',
-      /[^]]+/,
+      alias(/[^]]+/, $.cdata_pattern),
       ']]>'
     ),
 
-    _doctype: $ => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
+    doctype_: $ => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
 
-    _node: $ => choice(
-      $.doctype,
-      $.cdata,
-      $.text_,
-      $.markup_element, 
-      $.erroneous_end_tag
+    node: $ => choice(
+      field('text_markup_element', $.text_), 
+      field('markup_element', choice(
+        $.doctype,
+        $.cdata,
+        $.standard_markup_element, 
+        $.erroneous_end_tag
+      ))
     ),
 
-    markup_element: $ => choice(
+    standard_markup_element: $ => choice(
       $.element,
       $.script_element,
       $.style_element,
@@ -53,7 +55,7 @@ module.exports = grammar({
     element: $ => choice(
       seq(
         $.markup_opening_tag,
-        optional_with_placeholder('markup_element_content', repeat($._node)),
+        optional_with_placeholder('markup_element_content', repeat($.node)),
         choice($.markup_closing_tag, $.implicit_end_tag)
       ),
       $.markup_singleton_tag,
@@ -63,14 +65,12 @@ module.exports = grammar({
     script_element: $ => seq(
       alias($.script_start_tag, $.markup_opening_tag),
       optional_with_placeholder('markup_element_content', $.raw_text),
-      // optional($.raw_text),
       $.markup_closing_tag
     ),
 
     style_element: $ => seq(
       alias($.style_start_tag, $.markup_opening_tag),
       optional_with_placeholder('markup_element_content', $.raw_text),
-      // optional($.raw_text),
       $.markup_closing_tag
     ),
 
@@ -132,7 +132,7 @@ module.exports = grammar({
 
     erroneous_end_tag: $ => field('markup_closing_tag', seq(
       '</',
-      field('identifier', $.erroneous_end_tag_name),
+      alias($.erroneous_end_tag_name, $.identifier),
       '>'
     )),
 
@@ -154,8 +154,8 @@ module.exports = grammar({
     attribute_value: $ => /[^<>"'=\s]+/,
 
     quoted_attribute_value: $ => choice(
-      seq("'", optional(alias(/[^']+/, $.attribute_value)), "'"),
-      seq('"', optional(alias(/[^"]+/, $.attribute_value)), '"')
+      seq("'", optional(alias(/[^']+/, $.single_quote)), "'"),
+      seq('"', optional(alias(/[^"]+/, $.double_quote)), '"')
     ),
 
     text_: $ => /[^<>]+/
