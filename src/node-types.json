@@ -63,12 +63,12 @@
     "type": "element",
     "named": true,
     "fields": {
-      "markup_element_content": {
+      "markup_content_list": {
         "multiple": true,
         "required": false,
         "types": [
           {
-            "type": "node",
+            "type": "markup_content",
             "named": true
           }
         ]
@@ -134,7 +134,7 @@
       "required": false,
       "types": [
         {
-          "type": "node",
+          "type": "markup_content",
           "named": true
         }
       ]
@@ -180,6 +180,44 @@
         "types": [
           {
             "type": "end_tag_name",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "markup_content",
+    "named": true,
+    "fields": {
+      "markup_element": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "cdata",
+            "named": true
+          },
+          {
+            "type": "doctype",
+            "named": true
+          },
+          {
+            "type": "erroneous_end_tag",
+            "named": true
+          },
+          {
+            "type": "standard_markup_element",
+            "named": true
+          }
+        ]
+      },
+      "text_markup_element": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "text_",
             "named": true
           }
         ]
@@ -247,44 +285,6 @@
     }
   },
   {
-    "type": "node",
-    "named": true,
-    "fields": {
-      "markup_element": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "cdata",
-            "named": true
-          },
-          {
-            "type": "doctype",
-            "named": true
-          },
-          {
-            "type": "erroneous_end_tag",
-            "named": true
-          },
-          {
-            "type": "standard_markup_element",
-            "named": true
-          }
-        ]
-      },
-      "text_markup_element": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "text_",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
     "type": "quoted_attribute_value",
     "named": true,
     "fields": {},
@@ -307,7 +307,7 @@
     "type": "script_element",
     "named": true,
     "fields": {
-      "markup_element_content": {
+      "markup_content_list": {
         "multiple": false,
         "required": false,
         "types": [
@@ -360,7 +360,7 @@
     "type": "style_element",
     "named": true,
     "fields": {
-      "markup_element_content": {
+      "markup_content_list": {
         "multiple": false,
         "required": false,
         "types": [

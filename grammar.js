@@ -19,7 +19,7 @@ module.exports = grammar({
   ],
 
   rules: {
-    fragment: $ => repeat($.node),
+    fragment: $ => repeat($.markup_content),
 
     doctype: $ => seq(
       '<!',
@@ -36,7 +36,7 @@ module.exports = grammar({
 
     doctype_: $ => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
 
-    node: $ => choice(
+    markup_content: $ => choice(
       field('text_markup_element', $.text_), 
       field('markup_element', choice(
         $.doctype,
@@ -55,7 +55,7 @@ module.exports = grammar({
     element: $ => choice(
       seq(
         $.markup_opening_tag,
-        optional_with_placeholder('markup_element_content', repeat($.node)),
+        optional_with_placeholder('markup_content_list', repeat($.markup_content)),
         choice($.markup_closing_tag, $.implicit_end_tag)
       ),
       $.markup_singleton_tag,
@@ -64,13 +64,13 @@ module.exports = grammar({
 
     script_element: $ => seq(
       alias($.script_start_tag, $.markup_opening_tag),
-      optional_with_placeholder('markup_element_content', $.raw_text),
+      optional_with_placeholder('markup_content_list', $.raw_text),
       $.markup_closing_tag
     ),
 
     style_element: $ => seq(
       alias($.style_start_tag, $.markup_opening_tag),
-      optional_with_placeholder('markup_element_content', $.raw_text),
+      optional_with_placeholder('markup_content_list', $.raw_text),
       $.markup_closing_tag
     ),
 

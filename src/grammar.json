@@ -5,7 +5,7 @@
       "type": "REPEAT",
       "content": {
         "type": "SYMBOL",
-        "name": "node"
+        "name": "markup_content"
       }
     },
     "doctype": {
@@ -60,7 +60,7 @@
       "type": "PATTERN",
       "value": "[Dd][Oo][Cc][Tt][Yy][Pp][Ee]"
     },
-    "node": {
+    "markup_content": {
       "type": "CHOICE",
       "members": [
         {
@@ -130,18 +130,18 @@
               "members": [
                 {
                   "type": "FIELD",
-                  "name": "markup_element_content",
+                  "name": "markup_content_list",
                   "content": {
                     "type": "REPEAT",
                     "content": {
                       "type": "SYMBOL",
-                      "name": "node"
+                      "name": "markup_content"
                     }
                   }
                 },
                 {
                   "type": "FIELD",
-                  "name": "markup_element_content",
+                  "name": "markup_content_list",
                   "content": {
                     "type": "BLANK"
                   }
@@ -190,7 +190,7 @@
           "members": [
             {
               "type": "FIELD",
-              "name": "markup_element_content",
+              "name": "markup_content_list",
               "content": {
                 "type": "SYMBOL",
                 "name": "raw_text"
@@ -198,7 +198,7 @@
             },
             {
               "type": "FIELD",
-              "name": "markup_element_content",
+              "name": "markup_content_list",
               "content": {
                 "type": "BLANK"
               }
@@ -228,7 +228,7 @@
           "members": [
             {
               "type": "FIELD",
-              "name": "markup_element_content",
+              "name": "markup_content_list",
               "content": {
                 "type": "SYMBOL",
                 "name": "raw_text"
@@ -236,7 +236,7 @@
             },
             {
               "type": "FIELD",
-              "name": "markup_element_content",
+              "name": "markup_content_list",
               "content": {
                 "type": "BLANK"
               }
