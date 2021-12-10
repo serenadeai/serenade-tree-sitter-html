@@ -1,35 +1,34 @@
 module.exports = grammar({
-  name: "html",
+  name: 'html',
 
-  extras: ($) => [$.comment, /\s+/],
+  extras: $ => [$.comment, /\s+/],
 
-  externals: ($) => [
+  externals: $ => [
     $.start_tag_name,
     $.script_start_tag_name,
     $.style_start_tag_name,
     $.end_tag_name,
     $.erroneous_end_tag_name,
-    "/>",
+    '/>',
     $.implicit_end_tag,
     $.raw_text,
     $.comment,
   ],
 
   rules: {
-    fragment: ($) => repeat($.markup_content),
+    fragment: $ => repeat($.markup_content),
 
-    doctype: ($) =>
-      seq("<!", $.doctype_, alias(/[^>]+/, $.doctype_pattern), ">"),
+    doctype: $ => seq('<!', $.doctype_, alias(/[^>]+/, $.doctype_pattern), '>'),
 
-    cdata: ($) => seq("<![CDATA[", alias(/[^]]+/, $.cdata_pattern), "]]>"),
+    cdata: $ => seq('<![CDATA[', alias(/[^]]+/, $.cdata_pattern), ']]>'),
 
-    doctype_: ($) => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
+    doctype_: $ => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
 
-    markup_content: ($) =>
+    markup_content: $ =>
       choice(
-        field("text_markup_element", $.text_),
+        field('text_markup_element', $.text_),
         field(
-          "markup_element",
+          'markup_element',
           choice(
             $.doctype,
             $.cdata,
@@ -39,15 +38,15 @@ module.exports = grammar({
         )
       ),
 
-    standard_markup_element: ($) =>
+    standard_markup_element: $ =>
       choice($.element, $.script_element, $.style_element),
 
-    element: ($) =>
+    element: $ =>
       choice(
         seq(
           $.markup_opening_tag,
           optional_with_placeholder(
-            "markup_content_list",
+            'markup_content_list',
             repeat($.markup_content)
           ),
           choice($.markup_closing_tag, $.implicit_end_tag)
@@ -56,112 +55,112 @@ module.exports = grammar({
         $.declaration_tag
       ),
 
-    script_element: ($) =>
+    script_element: $ =>
       seq(
         alias($.script_start_tag, $.markup_opening_tag),
-        optional_with_placeholder("markup_content_list", $.raw_text),
+        optional_with_placeholder('markup_content_list', $.raw_text),
         $.markup_closing_tag
       ),
 
-    style_element: ($) =>
+    style_element: $ =>
       seq(
         alias($.style_start_tag, $.markup_opening_tag),
-        optional_with_placeholder("markup_content_list", $.raw_text),
+        optional_with_placeholder('markup_content_list', $.raw_text),
         $.markup_closing_tag
       ),
 
-    markup_opening_tag: ($) =>
+    markup_opening_tag: $ =>
       seq(
-        "<",
-        field("identifier", $.start_tag_name),
+        '<',
+        field('identifier', $.start_tag_name),
         optional_with_placeholder(
-          "markup_attribute_list",
+          'markup_attribute_list',
           repeat($.markup_attribute)
         ),
-        ">"
+        '>'
       ),
 
-    script_start_tag: ($) =>
+    script_start_tag: $ =>
       seq(
-        "<",
-        field("identifier", $.script_start_tag_name),
+        '<',
+        field('identifier', $.script_start_tag_name),
         optional_with_placeholder(
-          "markup_attribute_list",
+          'markup_attribute_list',
           repeat($.markup_attribute)
         ),
-        ">"
+        '>'
       ),
 
-    style_start_tag: ($) =>
+    style_start_tag: $ =>
       seq(
-        "<",
-        field("identifier", $.style_start_tag_name),
+        '<',
+        field('identifier', $.style_start_tag_name),
         optional_with_placeholder(
-          "markup_attribute_list",
+          'markup_attribute_list',
           repeat($.markup_attribute)
         ),
-        ">"
+        '>'
       ),
 
-    markup_singleton_tag: ($) =>
+    markup_singleton_tag: $ =>
       seq(
-        "<",
-        field("identifier", $.start_tag_name),
+        '<',
+        field('identifier', $.start_tag_name),
         optional_with_placeholder(
-          "markup_attribute_list",
+          'markup_attribute_list',
           repeat($.markup_attribute)
         ),
-        "/>"
+        '/>'
       ),
 
-    declaration_tag: ($) =>
+    declaration_tag: $ =>
       seq(
-        "<?",
-        field("identifier", $.start_tag_name),
+        '<?',
+        field('identifier', $.start_tag_name),
         optional_with_placeholder(
-          "markup_attribute_list",
+          'markup_attribute_list',
           repeat($.markup_attribute)
         ),
-        "?>"
+        '?>'
       ),
 
-    markup_closing_tag: ($) =>
-      seq("</", field("identifier", $.end_tag_name), ">"),
+    markup_closing_tag: $ =>
+      seq('</', field('identifier', $.end_tag_name), '>'),
 
-    erroneous_end_tag: ($) =>
+    erroneous_end_tag: $ =>
       field(
-        "markup_closing_tag",
-        seq("</", alias($.erroneous_end_tag_name, $.identifier), ">")
+        'markup_closing_tag',
+        seq('</', alias($.erroneous_end_tag_name, $.identifier), '>')
       ),
 
-    markup_attribute: ($) =>
+    markup_attribute: $ =>
       seq(
         $.markup_attribute_name,
         optional(
           seq(
-            "=",
+            '=',
             field(
-              "markup_attribute_value",
+              'markup_attribute_value',
               choice($.attribute_value, $.quoted_attribute_value)
             )
           )
         )
       ),
 
-    markup_attribute_name: ($) => /[^<>"'/=\s]+/,
+    markup_attribute_name: $ => /[^<>"'/=\s]+/,
 
-    attribute_value: ($) => /[^<>"'=\s]+/,
+    attribute_value: $ => /[^<>"'=\s]+/,
 
-    quoted_attribute_value: ($) =>
+    quoted_attribute_value: $ =>
       choice(
         seq("'", optional(alias(/[^']+/, $.single_quote)), "'"),
         seq('"', optional(alias(/[^"]+/, $.double_quote)), '"')
       ),
 
-    text_: ($) => /[^<>]+/,
+    text_: $ => /[^<>]+/,
   },
-});
+})
 
 function optional_with_placeholder(field_name, rule) {
-  return choice(field(field_name, rule), field(field_name, blank()));
+  return choice(field(field_name, rule), field(field_name, blank()))
 }
